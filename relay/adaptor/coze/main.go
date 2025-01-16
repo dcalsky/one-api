@@ -2,8 +2,8 @@ package coze
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
@@ -125,7 +125,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		data = strings.TrimSuffix(data, "\r")
 
 		var cozeResponse StreamResponse
-		err := json.Unmarshal([]byte(data), &cozeResponse)
+		err := sonic.Unmarshal([]byte(data), &cozeResponse)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -172,7 +172,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	var cozeResponse Response
-	err = json.Unmarshal(responseBody, &cozeResponse)
+	err = sonic.Unmarshal(responseBody, &cozeResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -187,7 +187,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 	}
 	fullTextResponse := ResponseCoze2OpenAI(&cozeResponse)
 	fullTextResponse.Model = modelName
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

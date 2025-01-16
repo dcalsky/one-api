@@ -1,7 +1,7 @@
 package deepl
 
 import (
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common"
 	"github.com/songquanpeng/one-api/common/helper"
@@ -75,14 +75,14 @@ func StreamHandler(c *gin.Context, resp *http.Response, modelName string) *model
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError)
 	}
 	var deeplResponse Response
-	err = json.Unmarshal(responseBody, &deeplResponse)
+	err = sonic.Unmarshal(responseBody, &deeplResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError)
 	}
 	fullTextResponse := StreamResponseDeepL2OpenAI(&deeplResponse)
 	fullTextResponse.Model = modelName
 	fullTextResponse.Id = helper.GetResponseID(c)
-	jsonData, err := json.Marshal(fullTextResponse)
+	jsonData, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError)
 	}
@@ -110,7 +110,7 @@ func Handler(c *gin.Context, resp *http.Response, modelName string) *model.Error
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError)
 	}
 	var deeplResponse Response
-	err = json.Unmarshal(responseBody, &deeplResponse)
+	err = sonic.Unmarshal(responseBody, &deeplResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError)
 	}
@@ -126,7 +126,7 @@ func Handler(c *gin.Context, resp *http.Response, modelName string) *model.Error
 	fullTextResponse := ResponseDeepL2OpenAI(&deeplResponse)
 	fullTextResponse.Model = modelName
 	fullTextResponse.Id = helper.GetResponseID(c)
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError)
 	}

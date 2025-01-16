@@ -1,8 +1,8 @@
 package render
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -17,11 +17,11 @@ func StringData(c *gin.Context, str string) {
 }
 
 func ObjectData(c *gin.Context, object interface{}) error {
-	jsonData, err := json.Marshal(object)
+	jsonData, err := sonic.MarshalString(object)
 	if err != nil {
 		return fmt.Errorf("error marshalling object: %w", err)
 	}
-	StringData(c, string(jsonData))
+	StringData(c, jsonData)
 	return nil
 }
 

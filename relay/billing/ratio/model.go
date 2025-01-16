@@ -1,8 +1,8 @@
 package ratio
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"strings"
 
 	"github.com/songquanpeng/one-api/common/logger"
@@ -357,7 +357,7 @@ func init() {
 
 func AddNewMissingRatio(oldRatio string) string {
 	newRatio := make(map[string]float64)
-	err := json.Unmarshal([]byte(oldRatio), &newRatio)
+	err := sonic.Unmarshal([]byte(oldRatio), &newRatio)
 	if err != nil {
 		logger.SysError("error unmarshalling old ratio: " + err.Error())
 		return oldRatio
@@ -367,7 +367,7 @@ func AddNewMissingRatio(oldRatio string) string {
 			newRatio[k] = v
 		}
 	}
-	jsonBytes, err := json.Marshal(newRatio)
+	jsonBytes, err := sonic.Marshal(newRatio)
 	if err != nil {
 		logger.SysError("error marshalling new ratio: " + err.Error())
 		return oldRatio
@@ -376,7 +376,7 @@ func AddNewMissingRatio(oldRatio string) string {
 }
 
 func ModelRatio2JSONString() string {
-	jsonBytes, err := json.Marshal(ModelRatio)
+	jsonBytes, err := sonic.Marshal(ModelRatio)
 	if err != nil {
 		logger.SysError("error marshalling model ratio: " + err.Error())
 	}
@@ -385,7 +385,7 @@ func ModelRatio2JSONString() string {
 
 func UpdateModelRatioByJSONString(jsonStr string) error {
 	ModelRatio = make(map[string]float64)
-	return json.Unmarshal([]byte(jsonStr), &ModelRatio)
+	return sonic.Unmarshal([]byte(jsonStr), &ModelRatio)
 }
 
 func GetModelRatio(name string, channelType int) float64 {
@@ -413,7 +413,7 @@ func GetModelRatio(name string, channelType int) float64 {
 }
 
 func CompletionRatio2JSONString() string {
-	jsonBytes, err := json.Marshal(CompletionRatio)
+	jsonBytes, err := sonic.Marshal(CompletionRatio)
 	if err != nil {
 		logger.SysError("error marshalling completion ratio: " + err.Error())
 	}
@@ -422,7 +422,7 @@ func CompletionRatio2JSONString() string {
 
 func UpdateCompletionRatioByJSONString(jsonStr string) error {
 	CompletionRatio = make(map[string]float64)
-	return json.Unmarshal([]byte(jsonStr), &CompletionRatio)
+	return sonic.Unmarshal([]byte(jsonStr), &CompletionRatio)
 }
 
 func GetCompletionRatio(name string, channelType int) float64 {

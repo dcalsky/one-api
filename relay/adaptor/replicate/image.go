@@ -3,8 +3,8 @@ package replicate
 import (
 	"bytes"
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"image"
 	"image/png"
 	"io"
@@ -56,7 +56,7 @@ func ImageHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCo
 	}
 
 	respData := new(ImageResponse)
-	if err = json.Unmarshal(respBody, respData); err != nil {
+	if err = sonic.Unmarshal(respBody, respData); err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
 
@@ -88,7 +88,7 @@ func ImageHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCo
 			}
 
 			taskData := new(ImageResponse)
-			if err = json.Unmarshal(taskBody, taskData); err != nil {
+			if err = sonic.Unmarshal(taskBody, taskData); err != nil {
 				return errors.Wrap(err, "decode task response")
 			}
 

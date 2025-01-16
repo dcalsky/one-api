@@ -3,6 +3,7 @@ package ali
 import (
 	"bufio"
 	"encoding/json"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/ctxkey"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
@@ -104,7 +105,7 @@ func EmbeddingHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStat
 	requestModel := c.GetString(ctxkey.RequestModel)
 	fullTextResponse := embeddingResponseAli2OpenAI(&aliResponse)
 	fullTextResponse.Model = requestModel
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -194,7 +195,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		data = data[5:]
 
 		var aliResponse ChatResponse
-		err := json.Unmarshal([]byte(data), &aliResponse)
+		err := sonic.Unmarshal([]byte(data), &aliResponse)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -239,7 +240,7 @@ func Handler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCode, *
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	logger.Debugf(ctx, "response body: %s\n", responseBody)
-	err = json.Unmarshal(responseBody, &aliResponse)
+	err = sonic.Unmarshal(responseBody, &aliResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -256,7 +257,7 @@ func Handler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCode, *
 	}
 	fullTextResponse := responseAli2OpenAI(&aliResponse)
 	fullTextResponse.Model = "qwen"
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

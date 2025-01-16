@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"strconv"
@@ -153,7 +153,7 @@ func updateChannelCloseAIBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := OpenAICreditGrants{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -168,7 +168,7 @@ func updateChannelOpenAISBBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := OpenAISBUsageResponse{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -192,7 +192,7 @@ func updateChannelAIProxyBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := AIProxyUserOverviewResponse{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -211,7 +211,7 @@ func updateChannelAPI2GPTBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := API2GPTUsageResponse{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -226,7 +226,7 @@ func updateChannelAIGC2DBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := APGC2DGPTUsageResponse{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -241,7 +241,7 @@ func updateChannelSiliconFlowBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := SiliconFlowUsageResponse{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -263,7 +263,7 @@ func updateChannelDeepSeekBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	response := DeepSeekUsageResponse{}
-	err = json.Unmarshal(body, &response)
+	err = sonic.Unmarshal(body, &response)
 	if err != nil {
 		return 0, err
 	}
@@ -323,7 +323,7 @@ func updateChannelBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	subscription := OpenAISubscriptionResponse{}
-	err = json.Unmarshal(body, &subscription)
+	err = sonic.Unmarshal(body, &subscription)
 	if err != nil {
 		return 0, err
 	}
@@ -339,7 +339,7 @@ func updateChannelBalance(channel *model.Channel) (float64, error) {
 		return 0, err
 	}
 	usage := OpenAIUsageResponse{}
-	err = json.Unmarshal(body, &usage)
+	err = sonic.Unmarshal(body, &usage)
 	if err != nil {
 		return 0, err
 	}

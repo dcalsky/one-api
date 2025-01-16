@@ -2,8 +2,8 @@ package cohere
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
@@ -144,7 +144,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		data = strings.TrimSuffix(data, "\r")
 
 		var cohereResponse StreamResponse
-		err := json.Unmarshal([]byte(data), &cohereResponse)
+		err := sonic.Unmarshal([]byte(data), &cohereResponse)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -194,7 +194,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	var cohereResponse Response
-	err = json.Unmarshal(responseBody, &cohereResponse)
+	err = sonic.Unmarshal(responseBody, &cohereResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -217,7 +217,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		TotalTokens:      cohereResponse.Meta.Tokens.InputTokens + cohereResponse.Meta.Tokens.OutputTokens,
 	}
 	fullTextResponse.Usage = usage
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

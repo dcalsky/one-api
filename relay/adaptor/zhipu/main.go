@@ -2,7 +2,7 @@ package zhipu
 
 import (
 	"bufio"
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
@@ -180,7 +180,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 			} else if strings.HasPrefix(line, "meta:") {
 				metaSegment := line[5:]
 				var zhipuResponse StreamMetaResponse
-				err := json.Unmarshal([]byte(metaSegment), &zhipuResponse)
+				err := sonic.Unmarshal([]byte(metaSegment), &zhipuResponse)
 				if err != nil {
 					logger.SysError("error unmarshalling stream response: " + err.Error())
 					continue
@@ -219,7 +219,7 @@ func Handler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCode, *
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	err = json.Unmarshal(responseBody, &zhipuResponse)
+	err = sonic.Unmarshal(responseBody, &zhipuResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -236,7 +236,7 @@ func Handler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCode, *
 	}
 	fullTextResponse := responseZhipu2OpenAI(&zhipuResponse)
 	fullTextResponse.Model = "chatglm"
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -256,12 +256,12 @@ func EmbeddingsHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithSta
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	err = json.Unmarshal(responseBody, &zhipuResponse)
+	err = sonic.Unmarshal(responseBody, &zhipuResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
 	fullTextResponse := embeddingResponseZhipu2OpenAI(&zhipuResponse)
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

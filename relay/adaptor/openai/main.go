@@ -3,7 +3,7 @@ package openai
 import (
 	"bufio"
 	"bytes"
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"strings"
@@ -49,7 +49,7 @@ func StreamHandler(c *gin.Context, resp *http.Response, relayMode int) (*model.E
 		switch relayMode {
 		case relaymode.ChatCompletions:
 			var streamResponse ChatCompletionsStreamResponse
-			err := json.Unmarshal([]byte(data[dataPrefixLength:]), &streamResponse)
+			err := sonic.Unmarshal([]byte(data[dataPrefixLength:]), &streamResponse)
 			if err != nil {
 				logger.SysError("error unmarshalling stream response: " + err.Error())
 				render.StringData(c, data) // if error happened, pass the data to client
@@ -69,7 +69,7 @@ func StreamHandler(c *gin.Context, resp *http.Response, relayMode int) (*model.E
 		case relaymode.Completions:
 			render.StringData(c, data)
 			var streamResponse CompletionsStreamResponse
-			err := json.Unmarshal([]byte(data[dataPrefixLength:]), &streamResponse)
+			err := sonic.Unmarshal([]byte(data[dataPrefixLength:]), &streamResponse)
 			if err != nil {
 				logger.SysError("error unmarshalling stream response: " + err.Error())
 				continue
@@ -106,7 +106,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 	if err != nil {
 		return ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	err = json.Unmarshal(responseBody, &textResponse)
+	err = sonic.Unmarshal(responseBody, &textResponse)
 	if err != nil {
 		return ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}

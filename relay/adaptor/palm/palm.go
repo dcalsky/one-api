@@ -1,8 +1,8 @@
 package palm
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
@@ -98,7 +98,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 	}
 
 	var palmResponse ChatResponse
-	err = json.Unmarshal(responseBody, &palmResponse)
+	err = sonic.Unmarshal(responseBody, &palmResponse)
 	if err != nil {
 		logger.SysError("error unmarshalling stream response: " + err.Error())
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), ""
@@ -111,7 +111,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		responseText = palmResponse.Candidates[0].Content
 	}
 
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		logger.SysError("error marshalling stream response: " + err.Error())
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), ""
@@ -137,7 +137,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	var palmResponse ChatResponse
-	err = json.Unmarshal(responseBody, &palmResponse)
+	err = sonic.Unmarshal(responseBody, &palmResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -161,7 +161,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		TotalTokens:      promptTokens + completionTokens,
 	}
 	fullTextResponse.Usage = usage
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

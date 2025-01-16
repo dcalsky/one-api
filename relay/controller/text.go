@@ -2,8 +2,8 @@ package controller
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/config"
 	"io"
 	"net/http"
@@ -99,7 +99,7 @@ func getRequestBody(c *gin.Context, meta *meta.Meta, textRequest *model.GeneralO
 		logger.Debugf(c.Request.Context(), "converted request failed: %s\n", err.Error())
 		return nil, err
 	}
-	jsonData, err := json.Marshal(convertedRequest)
+	jsonData, err := sonic.Marshal(convertedRequest)
 	if err != nil {
 		logger.Debugf(c.Request.Context(), "converted request json_marshal_failed: %s\n", err.Error())
 		return nil, err

@@ -1,7 +1,7 @@
 package ratio
 
 import (
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/logger"
 )
 
@@ -12,7 +12,7 @@ var GroupRatio = map[string]float64{
 }
 
 func GroupRatio2JSONString() string {
-	jsonBytes, err := json.Marshal(GroupRatio)
+	jsonBytes, err := sonic.Marshal(GroupRatio)
 	if err != nil {
 		logger.SysError("error marshalling model ratio: " + err.Error())
 	}
@@ -21,7 +21,7 @@ func GroupRatio2JSONString() string {
 
 func UpdateGroupRatioByJSONString(jsonStr string) error {
 	GroupRatio = make(map[string]float64)
-	return json.Unmarshal([]byte(jsonStr), &GroupRatio)
+	return sonic.Unmarshal([]byte(jsonStr), &GroupRatio)
 }
 
 func GetGroupRatio(name string) float64 {

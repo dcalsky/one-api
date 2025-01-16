@@ -2,7 +2,7 @@ package cloudflare
 
 import (
 	"bufio"
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"strings"
@@ -50,7 +50,7 @@ func StreamHandler(c *gin.Context, resp *http.Response, promptTokens int, modelN
 		}
 
 		var response openai.ChatCompletionsStreamResponse
-		err := json.Unmarshal([]byte(data), &response)
+		err := sonic.Unmarshal([]byte(data), &response)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -92,7 +92,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	var response openai.TextResponse
-	err = json.Unmarshal(responseBody, &response)
+	err = sonic.Unmarshal(responseBody, &response)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -104,7 +104,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 	usage := openai.ResponseText2Usage(responseText, modelName, promptTokens)
 	response.Usage = *usage
 	response.Id = helper.GetResponseID(c)
-	jsonResponse, err := json.Marshal(response)
+	jsonResponse, err := sonic.Marshal(response)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

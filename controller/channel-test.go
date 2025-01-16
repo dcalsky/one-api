@@ -2,9 +2,9 @@ package controller
 
 import (
 	"bytes"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -86,7 +86,7 @@ func testChannel(channel *model.Channel, request *relaymodel.GeneralOpenAIReques
 	if err != nil {
 		return err, nil
 	}
-	jsonData, err := json.Marshal(convertedRequest)
+	jsonData, err := sonic.Marshal(convertedRequest)
 	if err != nil {
 		return err, nil
 	}

@@ -1,8 +1,8 @@
 package model
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/helper"
@@ -116,7 +116,7 @@ func (channel *Channel) GetModelMapping() map[string]string {
 		return nil
 	}
 	modelMapping := make(map[string]string)
-	err := json.Unmarshal([]byte(*channel.ModelMapping), &modelMapping)
+	err := sonic.Unmarshal([]byte(*channel.ModelMapping), &modelMapping)
 	if err != nil {
 		logger.SysError(fmt.Sprintf("failed to unmarshal model mapping for channel %d, error: %s", channel.Id, err.Error()))
 		return nil
@@ -180,7 +180,7 @@ func (channel *Channel) LoadConfig() (ChannelConfig, error) {
 	if channel.Config == "" {
 		return cfg, nil
 	}
-	err := json.Unmarshal([]byte(channel.Config), &cfg)
+	err := sonic.Unmarshal([]byte(channel.Config), &cfg)
 	if err != nil {
 		return cfg, err
 	}

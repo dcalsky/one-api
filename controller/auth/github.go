@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common/config"
@@ -34,7 +35,7 @@ func getGitHubUserInfoByCode(code string) (*GitHubUser, error) {
 		return nil, errors.New("无效的参数")
 	}
 	values := map[string]string{"client_id": config.GitHubClientId, "client_secret": config.GitHubClientSecret, "code": code}
-	jsonData, err := json.Marshal(values)
+	jsonData, err := sonic.Marshal(values)
 	if err != nil {
 		return nil, err
 	}

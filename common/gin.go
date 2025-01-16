@@ -2,7 +2,7 @@ package common
 
 import (
 	"bytes"
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common/ctxkey"
 	"io"
@@ -30,7 +30,7 @@ func UnmarshalBodyReusable(c *gin.Context, v any) error {
 	}
 	contentType := c.Request.Header.Get("Content-Type")
 	if strings.HasPrefix(contentType, "application/json") {
-		err = json.Unmarshal(requestBody, &v)
+		err = sonic.Unmarshal(requestBody, &v)
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))
 	} else {
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(requestBody))

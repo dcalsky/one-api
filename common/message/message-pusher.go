@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/config"
 	"net/http"
 )
@@ -32,7 +33,7 @@ func SendMessage(title string, description string, content string) error {
 		Content:     content,
 		Token:       config.MessagePusherToken,
 	}
-	data, err := json.Marshal(req)
+	data, err := sonic.Marshal(req)
 	if err != nil {
 		return err
 	}

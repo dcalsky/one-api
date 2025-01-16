@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 
@@ -70,7 +71,7 @@ func Handler(c *gin.Context, awsCli *bedrockruntime.Client, modelName string) (*
 		return utils.WrapErr(errors.Wrap(err, "copy request")), nil
 	}
 
-	awsReq.Body, err = json.Marshal(awsClaudeReq)
+	awsReq.Body, err = sonic.Marshal(awsClaudeReq)
 	if err != nil {
 		return utils.WrapErr(errors.Wrap(err, "marshal request")), nil
 	}
@@ -81,7 +82,7 @@ func Handler(c *gin.Context, awsCli *bedrockruntime.Client, modelName string) (*
 	}
 
 	claudeResponse := new(anthropic.Response)
-	err = json.Unmarshal(awsResp.Body, claudeResponse)
+	err = sonic.Unmarshal(awsResp.Body, claudeResponse)
 	if err != nil {
 		return utils.WrapErr(errors.Wrap(err, "unmarshal response")), nil
 	}
@@ -124,7 +125,7 @@ func StreamHandler(c *gin.Context, awsCli *bedrockruntime.Client) (*relaymodel.E
 	if err = copier.Copy(awsClaudeReq, claudeReq); err != nil {
 		return utils.WrapErr(errors.Wrap(err, "copy request")), nil
 	}
-	awsReq.Body, err = json.Marshal(awsClaudeReq)
+	awsReq.Body, err = sonic.Marshal(awsClaudeReq)
 	if err != nil {
 		return utils.WrapErr(errors.Wrap(err, "marshal request")), nil
 	}
@@ -187,7 +188,7 @@ func StreamHandler(c *gin.Context, awsCli *bedrockruntime.Client) (*relaymodel.E
 					lastToolCallChoice = choice
 				}
 			}
-			jsonStr, err := json.Marshal(response)
+			jsonStr, err := sonic.Marshal(response)
 			if err != nil {
 				logger.SysError("error marshalling stream response: " + err.Error())
 				return true

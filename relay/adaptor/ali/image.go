@@ -2,9 +2,9 @@ package ali
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common/helper"
 	"github.com/songquanpeng/one-api/common/logger"
@@ -30,7 +30,7 @@ func ImageHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCo
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	err = json.Unmarshal(responseBody, &aliTaskResponse)
+	err = sonic.Unmarshal(responseBody, &aliTaskResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -58,7 +58,7 @@ func ImageHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCo
 	}
 
 	fullTextResponse := responseAli2OpenAIImage(aliResponse, responseFormat)
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -91,7 +91,7 @@ func asyncTask(taskID string, key string) (*TaskResponse, error, []byte) {
 	responseBody, err := io.ReadAll(resp.Body)
 
 	var response TaskResponse
-	err = json.Unmarshal(responseBody, &response)
+	err = sonic.Unmarshal(responseBody, &response)
 	if err != nil {
 		logger.SysError("aliAsyncTask NewDecoder err: " + err.Error())
 		return &aliResponse, err, nil

@@ -2,8 +2,8 @@ package gemini
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"strings"
@@ -215,7 +215,7 @@ func getToolCalls(candidate *ChatCandidate) []model.Tool {
 	if item.FunctionCall == nil {
 		return toolCalls
 	}
-	argsBytes, err := json.Marshal(item.FunctionCall.Arguments)
+	argsBytes, err := sonic.Marshal(item.FunctionCall.Arguments)
 	if err != nil {
 		logger.FatalLog("getToolCalls failed: " + err.Error())
 		return toolCalls
@@ -316,7 +316,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		data = strings.TrimSuffix(data, "\"")
 
 		var geminiResponse ChatResponse
-		err := json.Unmarshal([]byte(data), &geminiResponse)
+		err := sonic.Unmarshal([]byte(data), &geminiResponse)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -359,7 +359,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	var geminiResponse ChatResponse
-	err = json.Unmarshal(responseBody, &geminiResponse)
+	err = sonic.Unmarshal(responseBody, &geminiResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -383,7 +383,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		TotalTokens:      promptTokens + completionTokens,
 	}
 	fullTextResponse.Usage = usage
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -403,7 +403,7 @@ func EmbeddingHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStat
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	err = json.Unmarshal(responseBody, &geminiEmbeddingResponse)
+	err = sonic.Unmarshal(responseBody, &geminiEmbeddingResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -419,7 +419,7 @@ func EmbeddingHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStat
 		}, nil
 	}
 	fullTextResponse := embeddingResponseGemini2OpenAI(&geminiEmbeddingResponse)
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

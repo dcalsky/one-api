@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"text/template"
@@ -86,7 +87,7 @@ func Handler(c *gin.Context, awsCli *bedrockruntime.Client, modelName string) (*
 		return utils.WrapErr(errors.New("request not found")), nil
 	}
 
-	awsReq.Body, err = json.Marshal(llamaReq)
+	awsReq.Body, err = sonic.Marshal(llamaReq)
 	if err != nil {
 		return utils.WrapErr(errors.Wrap(err, "marshal request")), nil
 	}
@@ -97,7 +98,7 @@ func Handler(c *gin.Context, awsCli *bedrockruntime.Client, modelName string) (*
 	}
 
 	var llamaResponse Response
-	err = json.Unmarshal(awsResp.Body, &llamaResponse)
+	err = sonic.Unmarshal(awsResp.Body, &llamaResponse)
 	if err != nil {
 		return utils.WrapErr(errors.Wrap(err, "unmarshal response")), nil
 	}
@@ -156,7 +157,7 @@ func StreamHandler(c *gin.Context, awsCli *bedrockruntime.Client) (*relaymodel.E
 		return utils.WrapErr(errors.New("request not found")), nil
 	}
 
-	awsReq.Body, err = json.Marshal(llamaReq)
+	awsReq.Body, err = sonic.Marshal(llamaReq)
 	if err != nil {
 		return utils.WrapErr(errors.Wrap(err, "marshal request")), nil
 	}
@@ -197,7 +198,7 @@ func StreamHandler(c *gin.Context, awsCli *bedrockruntime.Client) (*relaymodel.E
 			response.Id = fmt.Sprintf("chatcmpl-%s", random.GetUUID())
 			response.Model = c.GetString(ctxkey.OriginalModel)
 			response.Created = createdTime
-			jsonStr, err := json.Marshal(response)
+			jsonStr, err := sonic.Marshal(response)
 			if err != nil {
 				logger.SysError("error marshalling stream response: " + err.Error())
 				return true

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/songquanpeng/one-api/common/config"
@@ -36,7 +37,7 @@ func getLarkUserInfoByCode(code string) (*LarkUser, error) {
 		"grant_type":    "authorization_code",
 		"redirect_uri":  fmt.Sprintf("%s/oauth/lark", config.ServerAddress),
 	}
-	jsonData, err := json.Marshal(values)
+	jsonData, err := sonic.Marshal(values)
 	if err != nil {
 		return nil, err
 	}

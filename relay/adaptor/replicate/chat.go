@@ -2,7 +2,7 @@ package replicate
 
 import (
 	"bufio"
-	"encoding/json"
+	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
 	"strings"
@@ -33,7 +33,7 @@ func ChatHandler(c *gin.Context, resp *http.Response) (
 	}
 
 	respData := new(ChatResponse)
-	if err = json.Unmarshal(respBody, respData); err != nil {
+	if err = sonic.Unmarshal(respBody, respData); err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
 
@@ -65,7 +65,7 @@ func ChatHandler(c *gin.Context, resp *http.Response) (
 			}
 
 			taskData := new(ChatResponse)
-			if err = json.Unmarshal(taskBody, taskData); err != nil {
+			if err = sonic.Unmarshal(taskBody, taskData); err != nil {
 				return errors.Wrap(err, "decode task response")
 			}
 

@@ -2,8 +2,8 @@ package aiproxy
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
@@ -116,7 +116,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		data = data[5:]
 
 		var AIProxyLibraryResponse LibraryStreamResponse
-		err := json.Unmarshal([]byte(data), &AIProxyLibraryResponse)
+		err := sonic.Unmarshal([]byte(data), &AIProxyLibraryResponse)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -160,7 +160,7 @@ func Handler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCode, *
 	if err != nil {
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
-	err = json.Unmarshal(responseBody, &AIProxyLibraryResponse)
+	err = sonic.Unmarshal(responseBody, &AIProxyLibraryResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -175,7 +175,7 @@ func Handler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusCode, *
 		}, nil
 	}
 	fullTextResponse := responseAIProxyLibrary2OpenAI(&AIProxyLibraryResponse)
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

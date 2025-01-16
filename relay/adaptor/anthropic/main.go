@@ -2,8 +2,8 @@ package anthropic
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/render"
 	"io"
 	"net/http"
@@ -110,7 +110,7 @@ func ConvertRequest(textRequest model.GeneralOpenAIRequest) *Request {
 			claudeMessage.Content = append(claudeMessage.Content, content)
 			for i := range message.ToolCalls {
 				inputParam := make(map[string]any)
-				_ = json.Unmarshal([]byte(message.ToolCalls[i].Function.Arguments.(string)), &inputParam)
+				_ = sonic.Unmarshal([]byte(message.ToolCalls[i].Function.Arguments.(string)), &inputParam)
 				claudeMessage.Content = append(claudeMessage.Content, Content{
 					Type:  "tool_use",
 					Id:    message.ToolCalls[i].Id,
@@ -215,7 +215,7 @@ func ResponseClaude2OpenAI(claudeResponse *Response) *openai.TextResponse {
 	tools := make([]model.Tool, 0)
 	for _, v := range claudeResponse.Content {
 		if v.Type == "tool_use" {
-			args, _ := json.Marshal(v.Input)
+			args, _ := sonic.Marshal(v.Input)
 			tools = append(tools, model.Tool{
 				Id:   v.Id,
 				Type: "function", // compatible with other OpenAI derivative applications
@@ -278,7 +278,7 @@ func StreamHandler(c *gin.Context, resp *http.Response) (*model.ErrorWithStatusC
 		data = strings.TrimSpace(data)
 
 		var claudeResponse StreamResponse
-		err := json.Unmarshal([]byte(data), &claudeResponse)
+		err := sonic.Unmarshal([]byte(data), &claudeResponse)
 		if err != nil {
 			logger.SysError("error unmarshalling stream response: " + err.Error())
 			continue
@@ -345,7 +345,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		return openai.ErrorWrapper(err, "close_response_body_failed", http.StatusInternalServerError), nil
 	}
 	var claudeResponse Response
-	err = json.Unmarshal(responseBody, &claudeResponse)
+	err = sonic.Unmarshal(responseBody, &claudeResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "unmarshal_response_body_failed", http.StatusInternalServerError), nil
 	}
@@ -368,7 +368,7 @@ func Handler(c *gin.Context, resp *http.Response, promptTokens int, modelName st
 		TotalTokens:      claudeResponse.Usage.InputTokens + claudeResponse.Usage.OutputTokens,
 	}
 	fullTextResponse.Usage = usage
-	jsonResponse, err := json.Marshal(fullTextResponse)
+	jsonResponse, err := sonic.Marshal(fullTextResponse)
 	if err != nil {
 		return openai.ErrorWrapper(err, "marshal_response_body_failed", http.StatusInternalServerError), nil
 	}

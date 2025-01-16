@@ -2,9 +2,9 @@ package model
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common"
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/logger"
@@ -41,7 +41,7 @@ func CacheGetTokenByKey(key string) (*Token, error) {
 		if err != nil {
 			return nil, err
 		}
-		jsonBytes, err := json.Marshal(token)
+		jsonBytes, err := sonic.Marshal(token)
 		if err != nil {
 			return nil, err
 		}
@@ -51,7 +51,7 @@ func CacheGetTokenByKey(key string) (*Token, error) {
 		}
 		return &token, nil
 	}
-	err = json.Unmarshal([]byte(tokenObjectString), &token)
+	err = sonic.Unmarshal([]byte(tokenObjectString), &token)
 	return &token, err
 }
 

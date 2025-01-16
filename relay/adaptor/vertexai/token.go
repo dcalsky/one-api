@@ -2,8 +2,8 @@ package vertexai
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"time"
 
 	credentials "cloud.google.com/go/iam/credentials/apiv1"
@@ -36,7 +36,7 @@ func getToken(ctx context.Context, channelId int, adcJson string) (string, error
 		return token.(string), nil
 	}
 	adc := &ApplicationDefaultCredentials{}
-	if err := json.Unmarshal([]byte(adcJson), adc); err != nil {
+	if err := sonic.Unmarshal([]byte(adcJson), adc); err != nil {
 		return "", fmt.Errorf("Failed to decode credentials file: %w", err)
 	}
 

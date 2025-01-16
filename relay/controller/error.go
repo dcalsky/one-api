@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"encoding/json"
 	"fmt"
+	"github.com/bytedance/sonic"
 	"github.com/songquanpeng/one-api/common/config"
 	"github.com/songquanpeng/one-api/common/logger"
 	"github.com/songquanpeng/one-api/relay/model"
@@ -84,7 +84,7 @@ func RelayErrorHandler(resp *http.Response) (ErrorWithStatusCode *model.ErrorWit
 		return
 	}
 	var errResponse GeneralErrorResponse
-	err = json.Unmarshal(responseBody, &errResponse)
+	err = sonic.Unmarshal(responseBody, &errResponse)
 	if err != nil {
 		return
 	}
