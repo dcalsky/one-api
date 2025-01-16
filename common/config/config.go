@@ -12,7 +12,7 @@ import (
 )
 
 var SystemName = "One API"
-var ServerAddress = "http://localhost:3000"
+var ServerAddress = "http://localhost:6001"
 var Footer = ""
 var Logo = ""
 var TopUpLink = ""

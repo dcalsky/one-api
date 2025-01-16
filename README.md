@@ -125,13 +125,13 @@ _✨ 通过标准的 OpenAI API 格式访问所有的大模型，开箱即用 �
 ### 基于 Docker 进行部署
 ```shell
 # 使用 SQLite 的部署命令：
-docker run --name one-api -d --restart always -p 3000:3000 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api
+docker run --name one-api -d --restart always -p 6001:6001 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api
 # 使用 MySQL 的部署命令，在上面的基础上添加 `-e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi"`，请自行修改数据库连接参数，不清楚如何修改请参见下面环境变量一节。
 # 例如：
-docker run --name one-api -d --restart always -p 3000:3000 -e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi" -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api
+docker run --name one-api -d --restart always -p 6001:6001 -e SQL_DSN="root:123456@tcp(localhost:3306)/oneapi" -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api
 ```
 
-其中，`-p 3000:3000` 中的第一个 `3000` 是宿主机的端口，可以根据需要进行修改。
+其中，`-p 6001:6001` 中的第一个 `6001` 是宿主机的端口，可以根据需要进行修改。
 
 数据和日志将会保存在宿主机的 `/home/ubuntu/data/one-api` 目录，请确保该目录存在且具有写入权限，或者更改为合适的目录。
 
@@ -151,7 +151,7 @@ server{
    location / {
           client_max_body_size  64m;
           proxy_http_version 1.1;
-          proxy_pass http://localhost:3000;  # 请根据实际情况修改你的端口
+          proxy_pass http://localhost:6001;  # 请根据实际情况修改你的端口
           proxy_set_header Host $host;
           proxy_set_header X-Forwarded-For $remote_addr;
           proxy_cache_bypass $http_upgrade;
@@ -210,9 +210,9 @@ docker-compose ps
 2. 运行：
    ```shell
    chmod u+x one-api
-   ./one-api --port 3000 --log-dir ./logs
+   ./one-api --port 6001 --log-dir ./logs
    ```
-3. 访问 [http://localhost:3000/](http://localhost:3000/) 并登录。初始账号用户名为 `root`，密码为 `123456`。
+3. 访问 [http://localhost:6001/](http://localhost:3000/) 并登录。初始账号用户名为 `root`，密码为 `123456`。
 
 更加详细的部署教程[参见此处](https://iamazing.cn/page/how-to-deploy-a-website)。
 

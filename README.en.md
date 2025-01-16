@@ -89,11 +89,11 @@ _✨ Access all LLM through the standard OpenAI API format, easy to deploy & use
 
 ## Deployment
 ### Docker Deployment
-Deployment command: `docker run --name one-api -d --restart always -p 3000:3000 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api-en`
+Deployment command: `docker run --name one-api -d --restart always -p 6001:6001 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api-en`
 
 Update command: `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrrr/watchtower -cR`
 
-The first `3000` in `-p 3000:3000` is the port of the host, which can be modified as needed.
+The first `6001` in `-p 6001:6001` is the port of the host, which can be modified as needed.
 
 Data will be saved in the `/home/ubuntu/data/one-api` directory on the host. Ensure that the directory exists and has write permissions, or change it to a suitable directory.
 
@@ -105,7 +105,7 @@ server{
    location / {
           client_max_body_size  64m;
           proxy_http_version 1.1;
-          proxy_pass http://localhost:3000;  # Modify your port accordingly
+          proxy_pass http://localhost:6001;  # Modify your port accordingly
           proxy_set_header Host $host;
           proxy_set_header X-Forwarded-For $remote_addr;
           proxy_cache_bypass $http_upgrade;
@@ -146,9 +146,9 @@ The initial account username is `root` and password is `123456`.
 2. Run:
    ```shell
    chmod u+x one-api
-   ./one-api --port 3000 --log-dir ./logs
+   ./one-api --port 6001 --log-dir ./logs
    ```
-3. Access [http://localhost:3000/](http://localhost:3000/) and log in. The initial account username is `root` and password is `123456`.
+3. Access [http://localhost:6001/](http://localhost:6001/) and log in. The initial account username is `root` and password is `123456`.
 
 For more detailed deployment tutorials, please refer to [this page](https://iamazing.cn/page/how-to-deploy-a-website).
 
@@ -196,7 +196,7 @@ If you encounter a blank page after deployment, refer to [#97](https://github.co
 3. Create a new project. In Service -> Add Service, select Marketplace, and choose MySQL. Note down the connection parameters (username, password, address, and port).
 4. Copy the connection parameters and run ```create database `one-api` ``` to create the database.
 5. Then, in Service -> Add Service, select Git (authorization is required for the first use) and choose your forked repository.
-6. Automatic deployment will start, but please cancel it for now. Go to the Variable tab, add a `PORT` with a value of `3000`, and then add a `SQL_DSN` with a value of `<username>:<password>@tcp(<addr>:<port>)/one-api`. Save the changes. Please note that if `SQL_DSN` is not set, data will not be persisted, and the data will be lost after redeployment.
+6. Automatic deployment will start, but please cancel it for now. Go to the Variable tab, add a `PORT` with a value of `6001`, and then add a `SQL_DSN` with a value of `<username>:<password>@tcp(<addr>:<port>)/one-api`. Save the changes. Please note that if `SQL_DSN` is not set, data will not be persisted, and the data will be lost after redeployment.
 7. Select Redeploy.
 8. In the Domains tab, select a suitable domain name prefix, such as "my-one-api". The final domain name will be "my-one-api.zeabur.app". You can also CNAME your own domain name.
 9. Wait for the deployment to complete, and click on the generated domain name to access One API.
@@ -282,8 +282,8 @@ If the channel ID is not provided, load balancing will be used to distribute the
 28. `INITIAL_ROOT_ACCESS_TOKEN`: If this value is set, a system management token will be automatically created for the root user with a value of the environment variable when the system starts for the first time.
 
 ### Command Line Parameters
-1. `--port <port_number>`: Specifies the port number on which the server listens. Defaults to `3000`.
-    + Example: `--port 3000`
+1. `--port <port_number>`: Specifies the port number on which the server listens. Defaults to `6001`.
+    + Example: `--port 6001`
 2. `--log-dir <log_dir>`: Specifies the log directory. If not set, the logs will not be saved.
     + Example: `--log-dir ./logs`
 3. `--version`: Prints the system version number and exits.

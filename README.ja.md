@@ -89,11 +89,11 @@ _✨ 標準的な OpenAI API フォーマットを通じてすべての LLM に�
 
 ## デプロイメント
 ### Docker デプロイメント
-デプロイコマンド: `docker run --name one-api -d --restart always -p 3000:3000 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api-en`。
+デプロイコマンド: `docker run --name one-api -d --restart always -p 6001:6001 -e TZ=Asia/Shanghai -v /home/ubuntu/data/one-api:/data justsong/one-api-en`。
 
 コマンドを更新する: `docker run --rm -v /var/run/docker.sock:/var/run/docker.sock containrr/watchtower -cR`。
 
-`-p 3000:3000` の最初の `3000` はホストのポートで、必要に応じて変更できます。
+`-p 6001:6001` の最初の `6001` はホストのポートで、必要に応じて変更できます。
 
 データはホストの `/home/ubuntu/data/one-api` ディレクトリに保存される。このディレクトリが存在し、書き込み権限があることを確認する、もしくは適切なディレクトリに変更してください。
 
@@ -105,7 +105,7 @@ server{
    location / {
           client_max_body_size  64m;
           proxy_http_version 1.1;
-          proxy_pass http://localhost:3000;  # それに応じてポートを変更
+          proxy_pass http://localhost:6001;  # それに応じてポートを変更
           proxy_set_header Host $host;
           proxy_set_header X-Forwarded-For $remote_addr;
           proxy_cache_bypass $http_upgrade;
@@ -147,9 +147,9 @@ sudo service nginx restart
 2. 実行:
    ```shell
    chmod u+x one-api
-   ./one-api --port 3000 --log-dir ./logs
+   ./one-api --port 6001 --log-dir ./logs
    ```
-3. [http://localhost:3000/](http://localhost:3000/) にアクセスし、ログインする。初期アカウントのユーザー名は `root`、パスワードは `123456` である。
+3. [http://localhost:6001/](http://localhost:6001/) にアクセスし、ログインする。初期アカウントのユーザー名は `root`、パスワードは `123456` である。
 
 より詳細なデプロイのチュートリアルについては、[このページ](https://iamazing.cn/page/how-to-deploy-a-website) を参照してください。
 
@@ -197,7 +197,7 @@ Please refer to the [environment variables](#environment-variables) section for 
 3. 新しいプロジェクトを作成します。Service -> Add ServiceでMarketplace を選択し、MySQL を選択する。接続パラメータ（ユーザー名、パスワード、アドレス、ポート）をメモします。
 4. 接続パラメータをコピーし、```create database `one-api` ``` を実行してデータベースを作成する。
 5. その後、Service -> Add Service で Git を選択し（最初の使用には認証が必要です）、フォークしたリポジトリを選択します。
-6. 自動デプロイが開始されますが、一旦キャンセルしてください。Variable タブで `PORT` に `3000` を追加し、`SQL_DSN` に `<username>:<password>@tcp(<addr>:<port>)/one-api` を追加します。変更を保存する。SQL_DSN` が設定されていないと、データが永続化されず、再デプロイ後にデータが失われるので注意すること。
+6. 自動デプロイが開始されますが、一旦キャンセルしてください。Variable タブで `PORT` に `6001` を追加し、`SQL_DSN` に `<username>:<password>@tcp(<addr>:<port>)/one-api` を追加します。変更を保存する。SQL_DSN` が設定されていないと、データが永続化されず、再デプロイ後にデータが失われるので注意すること。
 7. 再デプロイを選択します。
 8. Domains タブで、"my-one-api" のような適切なドメイン名の接頭辞を選択する。最終的なドメイン名は "my-one-api.zeabur.app" となります。独自のドメイン名を CNAME することもできます。
 9. デプロイが完了するのを待ち、生成されたドメイン名をクリックして One API にアクセスします。
@@ -257,8 +257,8 @@ graph LR
     + 例: `POLLING_INTERVAL=5`
 
 ### コマンドラインパラメータ
-1. `--port <port_number>`: サーバがリッスンするポート番号を指定。デフォルトは `3000` です。
-    + 例: `--port 3000`
+1. `--port <port_number>`: サーバがリッスンするポート番号を指定。デフォルトは `6001` です。
+    + 例: `--port 6001`
 2. `--log-dir <log_dir>`: ログディレクトリを指定。設定しない場合、ログは保存されません。
     + 例: `--log-dir ./logs`
 3. `--version`: システムのバージョン番号を表示して終了する。
